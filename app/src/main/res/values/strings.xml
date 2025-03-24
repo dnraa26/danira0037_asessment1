@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Asessment1</string>
+    <string name="intro_diary_form">Tell your story here :)</string>
+    <string name="diary_title">Diary Title</string>
+    <string name="diary_content">Diary Content</string>
+    <string name="diary_date">Diary Date</string>
+    <string name="diary_date_set">Diary %1$s</string>
+    <string name="diary_date_set_confirm">Confirm</string>
+    <string name="diary_create">Buat Diary</string>
+
 </resources>
