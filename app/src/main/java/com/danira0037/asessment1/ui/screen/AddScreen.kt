@@ -87,16 +87,16 @@ fun AddScreen(navController: NavController) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DiaryFormScreen(modifier: Modifier, navController: NavController){
-    var diaryTitle by rememberSaveable { mutableStateOf("") }
+    var diaryTitle by rememberSaveable { mutableStateOf(DiaryList.tempDiary.judul) }
     var diaryTitleError by rememberSaveable { mutableStateOf(false) }
 
-    var diaryContent by rememberSaveable { mutableStateOf("") }
+    var diaryContent by rememberSaveable { mutableStateOf(DiaryList.tempDiary.isi) }
     var diaryContentError  by rememberSaveable { mutableStateOf(false) }
 
-    var diaryDate by rememberSaveable { mutableStateOf("00/00/0000") }
+    var diaryDate by rememberSaveable { mutableStateOf(DiaryList.tempDiary.tanggal) }
     var diaryDateError by rememberSaveable { mutableStateOf(false) }
 
-    var diaryMood by rememberSaveable { mutableStateOf("Mood") }
+    var diaryMood by rememberSaveable { mutableStateOf(DiaryList.tempDiary.mood) }
     var diaryMoodError by rememberSaveable { mutableStateOf(false) }
 
 
@@ -118,7 +118,11 @@ fun DiaryFormScreen(modifier: Modifier, navController: NavController){
 
         OutlinedTextField(
             value = diaryTitle,
-            onValueChange = { title -> diaryTitle = title },
+            onValueChange = {
+                title ->
+                diaryTitle = title
+                DiaryList.tempDiary = Diary(title, diaryContent, diaryDate, diaryMood)
+            },
             label = { Text(text = stringResource(id = R.string.diary_title)) },
             singleLine = true,
             trailingIcon = { IconPicker(diaryTitleError) },
@@ -133,7 +137,11 @@ fun DiaryFormScreen(modifier: Modifier, navController: NavController){
 
         OutlinedTextField(
             value = diaryContent,
-            onValueChange = { content -> diaryContent = content },
+            onValueChange = {
+                content ->
+                diaryContent = content
+                DiaryList.tempDiary = Diary(diaryTitle, content, diaryDate, diaryMood)
+                            },
             label = {
                 Text(
                     text = stringResource(id = R.string.diary_content)
@@ -198,6 +206,9 @@ fun DiaryFormScreen(modifier: Modifier, navController: NavController){
                                 diaryDate = "${calendar.get(Calendar.DAY_OF_MONTH)}/" +
                                             "${calendar.get(Calendar.MONTH) + 1}/" +
                                             "${calendar.get(Calendar.YEAR)}"
+
+                                DiaryList.tempDiary = Diary(diaryTitle, diaryContent, diaryDate, diaryMood)
+
                             }
 
                             showDatePicker = false
@@ -246,6 +257,7 @@ fun DiaryFormScreen(modifier: Modifier, navController: NavController){
                         text = { Text(text = mood) },
                         onClick = {
                             diaryMood = mood
+                            DiaryList.tempDiary = Diary(diaryTitle, diaryContent, diaryDate, diaryMood)
                             showMoodDropDown = false
                         }
                     )
@@ -264,6 +276,8 @@ fun DiaryFormScreen(modifier: Modifier, navController: NavController){
 
                 if (!diaryTitleError && !diaryContentError && !diaryDateError && !diaryMoodError) {
                     DiaryList.addToDiary(Diary(diaryTitle, diaryContent, diaryDate, diaryMood))
+                    DiaryList.tempDiary = Diary("", "", "00/00/0000", "Mood")
+
                     navController.popBackStack()
                 }
             }
