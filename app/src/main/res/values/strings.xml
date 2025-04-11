@@ -9,6 +9,9 @@
     <string name="diary_date_set_confirm">Set Date</string>
     <string name="diary_create">Save Entry</string>
     <string name="diary">Write</string>
+    <string name="share">Share</string>
+    <string name="share_template">Title : %1$s\nDate : %2$s\nMood : %3$s\n\nHere is what I wrote today:\n\%4$s</string>
+    <string name="share_title">Share your diary with…</string>
     <string name="empty_diary">You have not written anything yet. Start with your first memory today.</string>
     <string name="diary_title_error">Please give your diary a title.</string>
     <string name="diary_content_error">Your story deserves to be written. Do not leave it empty.</string>
