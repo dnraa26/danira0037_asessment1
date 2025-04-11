@@ -69,6 +69,9 @@ fun AddScreen(navController: NavController) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DiaryFormScreen(modifier: Modifier, navController: NavController) {
+    val moodText = stringResource(R.string.diary_mood)
+    DiaryList.tempDiary = Diary("", "", "00/00/0000", moodText)
+
     var diaryTitle by rememberSaveable { mutableStateOf(DiaryList.tempDiary.judul) }
     var diaryContent by rememberSaveable { mutableStateOf(DiaryList.tempDiary.isi) }
     var diaryDate by rememberSaveable { mutableStateOf(DiaryList.tempDiary.tanggal) }
@@ -237,11 +240,11 @@ fun DiaryFormScreen(modifier: Modifier, navController: NavController) {
                 diaryTitleError = diaryTitle.isBlank()
                 diaryContentError = diaryContent.isBlank()
                 diaryDateError = diaryDate == "00/00/0000"
-                diaryMoodError = diaryMood == "Mood"
+                diaryMoodError = diaryMood == moodText
 
                 if (!diaryTitleError && !diaryContentError && !diaryDateError && !diaryMoodError) {
                     DiaryList.addToDiary(Diary(diaryTitle, diaryContent, diaryDate, diaryMood))
-                    DiaryList.tempDiary = Diary("", "", "00/00/0000", "Mood")
+                    DiaryList.tempDiary = Diary("", "", "00/00/0000", moodText)
                     navController.popBackStack()
                 }
             },
