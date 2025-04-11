@@ -2,47 +2,29 @@ package com.danira0037.asessment1.ui.screen
 
 import android.content.res.Configuration
 import android.icu.util.Calendar
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.Warning
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberDatePickerState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -59,11 +41,7 @@ fun AddScreen(navController: NavController) {
         topBar = {
             TopAppBar(
                 navigationIcon = {
-                    IconButton(
-                        onClick = {
-                            navController.popBackStack()
-                        }
-                    ) {
+                    IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back",
@@ -74,31 +52,32 @@ fun AddScreen(navController: NavController) {
                 title = { Text("My Diary") },
                 colors = TopAppBarDefaults.mediumTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.primary
                 )
             )
         }
     ) { innerPadding ->
-        DiaryFormScreen(Modifier.padding(innerPadding).padding(16.dp), navController)
+        DiaryFormScreen(
+            modifier = Modifier
+                .padding(innerPadding)
+                .padding(16.dp),
+            navController = navController
+        )
     }
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DiaryFormScreen(modifier: Modifier, navController: NavController){
+fun DiaryFormScreen(modifier: Modifier, navController: NavController) {
     var diaryTitle by rememberSaveable { mutableStateOf(DiaryList.tempDiary.judul) }
-    var diaryTitleError by rememberSaveable { mutableStateOf(false) }
-
     var diaryContent by rememberSaveable { mutableStateOf(DiaryList.tempDiary.isi) }
-    var diaryContentError  by rememberSaveable { mutableStateOf(false) }
-
     var diaryDate by rememberSaveable { mutableStateOf(DiaryList.tempDiary.tanggal) }
-    var diaryDateError by rememberSaveable { mutableStateOf(false) }
-
     var diaryMood by rememberSaveable { mutableStateOf(DiaryList.tempDiary.mood) }
-    var diaryMoodError by rememberSaveable { mutableStateOf(false) }
 
+    var diaryTitleError by rememberSaveable { mutableStateOf(false) }
+    var diaryContentError by rememberSaveable { mutableStateOf(false) }
+    var diaryDateError by rememberSaveable { mutableStateOf(false) }
+    var diaryMoodError by rememberSaveable { mutableStateOf(false) }
 
     val datePickerState = rememberDatePickerState()
     val focusManager = LocalFocusManager.current
@@ -107,63 +86,70 @@ fun DiaryFormScreen(modifier: Modifier, navController: NavController){
     var showDatePicker by rememberSaveable { mutableStateOf(false) }
 
     Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.Center,
+        modifier = modifier.verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Image(
+            painter = painterResource(id = R.drawable.magic),
+            contentDescription = "Sweeping dust",
+            contentScale = ContentScale.Fit,
+            modifier = Modifier.size(125.dp).padding(top = 20.dp, bottom = 10.dp)
+        )
+
+        Text(
+            text = stringResource(id = R.string.diary_create),
+            style = MaterialTheme.typography.headlineMedium,
+            textAlign = TextAlign.Center
+        )
+
         Text(
             text = stringResource(id = R.string.intro_diary_form),
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(horizontal = 8.dp)
         )
 
         OutlinedTextField(
             value = diaryTitle,
             onValueChange = {
-                title ->
-                diaryTitle = title
-                DiaryList.tempDiary = Diary(title, diaryContent, diaryDate, diaryMood)
+                diaryTitle = it
+                DiaryList.tempDiary = Diary(it, diaryContent, diaryDate, diaryMood)
             },
-            label = { Text(text = stringResource(id = R.string.diary_title)) },
-            singleLine = true,
+            label = { Text(stringResource(id = R.string.diary_title)) },
+            isError = diaryTitleError,
             trailingIcon = { IconPicker(diaryTitleError) },
+            singleLine = true,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Next
             ),
             modifier = Modifier.fillMaxWidth()
         )
-        ErrorHint(diaryTitleError, "Judul tidak boleh kosong!")
-
+        ErrorHint(diaryTitleError, stringResource(id = R.string.diary_title_error))
 
         OutlinedTextField(
             value = diaryContent,
             onValueChange = {
-                content ->
-                diaryContent = content
-                DiaryList.tempDiary = Diary(diaryTitle, content, diaryDate, diaryMood)
-                            },
-            label = {
-                Text(
-                    text = stringResource(id = R.string.diary_content)
-                )
+                diaryContent = it
+                DiaryList.tempDiary = Diary(diaryTitle, it, diaryDate, diaryMood)
             },
+            label = { Text(stringResource(id = R.string.diary_content)) },
+            isError = diaryContentError,
             trailingIcon = { IconPicker(diaryContentError) },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Text,
-            ),
-            modifier = Modifier.fillMaxWidth().height(150.dp).padding(top = 12.dp)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(150.dp)
         )
-        ErrorHint(diaryContentError, "Konten tidak boleh kosong!")
+        ErrorHint(diaryContentError, stringResource(id = R.string.diary_content_error))
 
         OutlinedTextField(
             value = diaryDate,
-            onValueChange = { },
+            onValueChange = {},
             readOnly = true,
-            label = {
-                Text(
-                    text = stringResource(id = R.string.diary_date)
-                )
-            },
+            label = { Text(stringResource(id = R.string.diary_date)) },
+            isError = diaryDateError,
             trailingIcon = {
                 IconButton(
                     onClick = {
@@ -171,80 +157,56 @@ fun DiaryFormScreen(modifier: Modifier, navController: NavController){
                         showDatePicker = true
                     }
                 ) {
-                   IconPicker(diaryDateError, {
-                       Icon(
-                           imageVector = Icons.Outlined.DateRange,
-                           contentDescription = "Date",
-                           tint = MaterialTheme.colorScheme.primary
-                       )
-                   })
+                    IconPicker(diaryDateError) {
+                        Icon(
+                            imageVector = Icons.Outlined.DateRange,
+                            contentDescription = stringResource(id = R.string.diary_date),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
                 }
             },
-            singleLine = true,
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable(enabled = true){
+                .clickable {
                     focusManager.clearFocus()
                     showDatePicker = true
                 }
         )
-        ErrorHint(diaryDateError, "Pilih tanggal!")
+        ErrorHint(diaryDateError, stringResource(id = R.string.diary_date_error))
 
-        if(showDatePicker){
+        if (showDatePicker) {
             DatePickerDialog(
-                onDismissRequest = {
-                    showDatePicker = false
-                },
+                onDismissRequest = { showDatePicker = false },
                 confirmButton = {
-                    TextButton(
-                        onClick = {
-                            datePickerState.selectedDateMillis?.let {
-                                millis -> val calendar = Calendar.getInstance().apply{
-                                    timeInMillis = millis
-                                }
-
-                                diaryDate = "${calendar.get(Calendar.DAY_OF_MONTH)}/" +
-                                            "${calendar.get(Calendar.MONTH) + 1}/" +
-                                            "${calendar.get(Calendar.YEAR)}"
-
-                                DiaryList.tempDiary = Diary(diaryTitle, diaryContent, diaryDate, diaryMood)
-
+                    TextButton(onClick = {
+                        datePickerState.selectedDateMillis?.let { millis ->
+                            val calendar = Calendar.getInstance().apply {
+                                timeInMillis = millis
                             }
-
-                            showDatePicker = false
+                            diaryDate = "${calendar.get(Calendar.DAY_OF_MONTH)}/${calendar.get(Calendar.MONTH) + 1}/${calendar.get(Calendar.YEAR)}"
+                            DiaryList.tempDiary = Diary(diaryTitle, diaryContent, diaryDate, diaryMood)
                         }
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.diary_date_set_confirm)
-                        )
+                        showDatePicker = false
+                    }) {
+                        Text(stringResource(id = R.string.diary_date_set_confirm))
                     }
                 }
             ) {
-                DatePicker(
-                    state = datePickerState
-                )
+                DatePicker(state = datePickerState)
             }
         }
 
-        Box (
-            modifier = Modifier.padding(16.dp)
-        ){
+        Box(modifier = Modifier.fillMaxWidth()) {
             Button(
-                onClick = {
-                    showMoodDropDown = true
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                )
+                onClick = { showMoodDropDown = true },
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Text(
-                    text = diaryMood
-                )
-
+                Text(diaryMood)
                 Icon(
                     imageVector = Icons.Outlined.ArrowDropDown,
-                    contentDescription = "Mood",
-                    tint = MaterialTheme.colorScheme.onSecondary
+                    contentDescription = stringResource(id = R.string.diary_mood),
+                    tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
 
@@ -252,23 +214,26 @@ fun DiaryFormScreen(modifier: Modifier, navController: NavController){
                 expanded = showMoodDropDown,
                 onDismissRequest = { showMoodDropDown = false }
             ) {
-                listOf("Senang", "Sedih", "Normal").forEach { mood ->
+                listOf(
+                    stringResource(id = R.string.happy_mood),
+                    stringResource(id = R.string.sad_mood),
+                    stringResource(id = R.string.normal_mood)
+                ).forEach { mood ->
                     DropdownMenuItem(
-                        text = { Text(text = mood) },
+                        text = { Text(mood) },
                         onClick = {
                             diaryMood = mood
-                            DiaryList.tempDiary = Diary(diaryTitle, diaryContent, diaryDate, diaryMood)
+                            DiaryList.tempDiary = Diary(diaryTitle, diaryContent, diaryDate, mood)
                             showMoodDropDown = false
                         }
                     )
                 }
             }
         }
-        ErrorHint(diaryMoodError, "Pilih mood!")
+        ErrorHint(diaryMoodError, stringResource(id = R.string.diary_mood_error))
 
         Button(
             onClick = {
-
                 diaryTitleError = diaryTitle.isBlank()
                 diaryContentError = diaryContent.isBlank()
                 diaryDateError = diaryDate == "00/00/0000"
@@ -277,39 +242,41 @@ fun DiaryFormScreen(modifier: Modifier, navController: NavController){
                 if (!diaryTitleError && !diaryContentError && !diaryDateError && !diaryMoodError) {
                     DiaryList.addToDiary(Diary(diaryTitle, diaryContent, diaryDate, diaryMood))
                     DiaryList.tempDiary = Diary("", "", "00/00/0000", "Mood")
-
                     navController.popBackStack()
                 }
-            }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp)
         ) {
-            Text(
-                text = stringResource(id = R.string.diary_create)
-            )
+            Text(stringResource(id = R.string.diary))
         }
-
-
     }
 }
 
+
 @Composable
-fun ErrorHint(isError: Boolean, message : String){
-    if(isError) {
+fun ErrorHint(isError: Boolean, message: String) {
+    if (isError) {
         Text(
             text = message,
-            color = MaterialTheme.colorScheme.error
+            color = MaterialTheme.colorScheme.error,
+            style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
         )
     }
 }
 
 @Composable
-fun IconPicker(isError : Boolean, content : @Composable () -> Unit = {}){
-    if(isError) {
+fun IconPicker(isError: Boolean, content: @Composable () -> Unit = {}) {
+    if (isError) {
         Icon(
             imageVector = Icons.Outlined.Warning,
             contentDescription = "Error",
             tint = MaterialTheme.colorScheme.error
         )
-    }else{
+    } else {
         content()
     }
 }
@@ -317,7 +284,7 @@ fun IconPicker(isError : Boolean, content : @Composable () -> Unit = {}){
 @Preview(showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
-fun DiaryFromScreenPreview(){
+fun DiaryFromScreenPreview() {
     Asessment1Theme {
         AddScreen(rememberNavController())
     }

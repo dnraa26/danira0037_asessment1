@@ -1,11 +1,20 @@
 <resources>
-    <string name="app_name">Asessment1</string>
-    <string name="intro_diary_form">Tell your story here :)</string>
+    <string name="app_name">My Diary</string>
+    <string name="intro_diary_form">Take a deep breath. Share your day, your thoughts, and everything in between.</string>
     <string name="diary_title">Diary Title</string>
     <string name="diary_content">Diary Content</string>
-    <string name="diary_date">Diary Date</string>
-    <string name="diary_date_set">Diary %1$s</string>
-    <string name="diary_date_set_confirm">Confirm</string>
-    <string name="diary_create">Buat Diary</string>
-
+    <string name="diary_date">Date of Entry</string>
+    <string name="diary_mood">How did you feel?</string>
+    <string name="diary_date_set">Entry Date: %1$s</string>
+    <string name="diary_date_set_confirm">Set Date</string>
+    <string name="diary_create">Save Entry</string>
+    <string name="diary">Write</string>
+    <string name="empty_diary">You have not written anything yet. Start with your first memory today.</string>
+    <string name="diary_title_error">Please give your diary a title.</string>
+    <string name="diary_content_error">Your story deserves to be written. Do not leave it empty.</string>
+    <string name="diary_date_error">Pick a date to remember this moment.</string>
+    <string name="diary_mood_error">How were you feeling? Do not skip this part.</string>
+    <string name="sad_mood">Sad</string>
+    <string name="happy_mood">Happy</string>
+    <string name="normal_mood">Neutral</string>
 </resources>
