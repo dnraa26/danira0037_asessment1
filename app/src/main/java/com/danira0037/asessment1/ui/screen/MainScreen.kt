@@ -91,7 +91,7 @@ fun MainScreenContent(modifier: Modifier = Modifier){
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize().padding(16.dp)
         ) {
             Image(
                 painter = painterResource(id = R.drawable.homework),

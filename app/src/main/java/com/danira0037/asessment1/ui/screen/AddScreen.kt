@@ -247,7 +247,7 @@ fun DiaryFormScreen(modifier: Modifier, navController: NavController) {
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp)
+                .padding(vertical = 16.dp)
         ) {
             Text(stringResource(id = R.string.diary))
         }

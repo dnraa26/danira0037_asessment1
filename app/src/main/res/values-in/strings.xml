@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Diary Ku</string>
+    <string name="intro_diary_form">Tarik napas dalam. Bagikan harimu, pikiranmu, dan semua yang kamu rasakan.</string>
+    <string name="diary_title">Judul Catatan</string>
+    <string name="diary_content">Isi Catatan</string>
+    <string name="diary_date">Tanggal Catatan</string>
+    <string name="diary_mood">Apa perasaanmu?</string>
+    <string name="diary_date_set">Tanggal Catatan: %1$s</string>
+    <string name="diary_date_set_confirm">Atur Tanggal</string>
+    <string name="diary_create">Simpan Catatan</string>
+    <string name="diary">Tulis</string>
+    <string name="share">Bagikan</string>
+    <string name="share_template">Judul: %1$s\nTanggal: %2$s\nPerasaan: %3$s\n\nIni yang kutulis hari ini:\n%4$s</string>
+    <string name="share_title">Bagikan catatanmu dengan…</string>
+    <string name="empty_diary">Kamu belum menulis apapun. Mulailah dengan kenangan pertamamu hari ini.</string>
+    <string name="diary_title_error">Silakan beri judul untuk catatanmu.</string>
+    <string name="diary_content_error">Ceritamu layak untuk dituliskan. Jangan dibiarkan kosong.</string>
+    <string name="diary_date_error">Pilih tanggal untuk mengenang momen ini.</string>
+    <string name="diary_mood_error">Bagaimana perasaanmu? Jangan lewatkan bagian ini.</string>
+    <string name="sad_mood">Sedih</string>
+    <string name="happy_mood">Senang</string>
+    <string name="normal_mood">Biasa saja</string>
+</resources>
