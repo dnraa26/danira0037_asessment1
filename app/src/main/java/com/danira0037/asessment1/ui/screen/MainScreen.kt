@@ -2,6 +2,7 @@ package com.danira0037.asessment1.ui.screen
 
 import android.content.Context
 import android.content.Intent
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,6 +19,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -25,6 +29,7 @@ import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -109,6 +114,7 @@ fun MainScreen(navController: NavHostController) {
         }
     ) { innerPadding ->
         MainScreenContent(
+            showList,
             Modifier.padding(innerPadding).padding(16.dp),
             navController
         )
@@ -116,7 +122,7 @@ fun MainScreen(navController: NavHostController) {
 }
 
 @Composable
-fun MainScreenContent(modifier: Modifier = Modifier, navController: NavHostController){
+fun MainScreenContent(showList : Boolean, modifier: Modifier = Modifier, navController: NavHostController){
     val context : Context = LocalContext.current
     val factory = ViewModelFactory(context)
     val viewModel : MainViewModel = viewModel(factory = factory)
@@ -142,21 +148,129 @@ fun MainScreenContent(modifier: Modifier = Modifier, navController: NavHostContr
             )
         }
     }else{
+        if(showList) {
 
-        LazyColumn(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            contentPadding = PaddingValues(bottom = 84.dp),
-            modifier = modifier.fillMaxSize()
-        ){
+            LazyColumn(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                contentPadding = PaddingValues(bottom = 84.dp),
+                modifier = modifier.fillMaxSize()
+            ) {
 
-            items(data){ diary ->
-                DiaryBox(diary = diary){
-                    navController.navigate(Screen.Edit.withId(diary.id))
+                items(data) { diary ->
+                    DiaryBox(diary = diary) {
+                        navController.navigate(Screen.Edit.withId(diary.id))
+                    }
+                }
+            }
+        }else{
+            LazyVerticalStaggeredGrid(
+                modifier = modifier.fillMaxSize(),
+                columns = StaggeredGridCells.Fixed(2),
+                verticalItemSpacing = 8.dp,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(2.dp,2.dp,2.dp,84.dp)
+            ) {
+                items(data) { diary ->
+                    GridItem(diary = diary) {
+                        navController.navigate(Screen.Edit.withId(diary.id))
+                    }
                 }
             }
         }
     }
 
+}
+
+@Composable
+fun GridItem(diary : Diary, onClick: () -> Unit){
+    val context = LocalContext.current
+
+    Card(
+        modifier = Modifier.fillMaxWidth().clickable {
+            onClick()
+        },
+        border = BorderStroke(1.dp, DividerDefaults.color),
+        elevation = CardDefaults.cardElevation(4.dp)
+    ){
+        Column(
+            modifier = Modifier.padding(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(
+                text = diary.judul,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = diary.tanggal,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(MaterialTheme.colorScheme.primaryContainer)
+                        .padding(horizontal = 10.dp, vertical = 4.dp)
+                ) {
+                    Text(
+                        text = diary.mood,
+                        style = MaterialTheme.typography.bodySmall,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
+            }
+
+            Text(
+                text = diary.isi,
+                style = MaterialTheme.typography.bodyLarge,
+                maxLines = 4,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier
+                    .padding(bottom = 16.dp)
+            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                Button(
+                    onClick = {
+                        shareDiary(
+                            context = context,
+                            message = context.getString(
+                                R.string.share_template,
+                                diary.judul,
+                                diary.tanggal,
+                                diary.mood,
+                                diary.isi
+                            )
+                        )
+                    },
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Share,
+                        contentDescription = stringResource(id = R.string.share),
+                        tint = MaterialTheme.colorScheme.onPrimary
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(text = stringResource(id = R.string.share))
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -171,7 +285,8 @@ fun DiaryBox(diary: Diary, onClick : () -> Unit) {
                 onClick()
             },
         shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(4.dp)
+        elevation = CardDefaults.cardElevation(4.dp),
+        border = BorderStroke(1.dp, DividerDefaults.color)
     ) {
         Column(
             modifier = Modifier

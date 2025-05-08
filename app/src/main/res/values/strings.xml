@@ -28,6 +28,6 @@
     <string name="delete_confirmation">Delete this diary?</string>
     <string name="delete_button">Delete</string>
     <string name="cancel_button">Cancel</string>
-    <string name="list">List view</string>
-    <string name="grid">Grid view</string>
+    <string name="list">List View</string>
+    <string name="grid">Grid View</string>
 </resources>
