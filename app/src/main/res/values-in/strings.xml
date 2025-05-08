@@ -21,4 +21,5 @@
     <string name="sad_mood">Sedih</string>
     <string name="happy_mood">Senang</string>
     <string name="normal_mood">Biasa saja</string>
+    <string name="clicked_card">%1$s diklik!</string>
 </resources>

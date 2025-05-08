@@ -2,11 +2,14 @@ package com.danira0037.asessment1.ui.screen
 
 import android.content.Context
 import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,6 +27,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -41,13 +45,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.danira0037.asessment1.R
 import com.danira0037.asessment1.model.Diary
-import com.danira0037.asessment1.model.DiaryList
+import com.danira0037.asessment1.model.MainViewModel
 import com.danira0037.asessment1.navigation.Screen
 import com.danira0037.asessment1.ui.theme.Asessment1Theme
 
@@ -76,6 +82,18 @@ fun MainScreen(navController: NavController) {
                     }
                 }
             )
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    navController.navigate(Screen.Add.route)
+                }
+            ){
+                Icon(
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = stringResource(id = R.string.diary_create)
+                )
+            }
         }
     ) { innerPadding ->
         MainScreenContent(Modifier.padding(innerPadding).padding(16.dp))
@@ -84,7 +102,9 @@ fun MainScreen(navController: NavController) {
 
 @Composable
 fun MainScreenContent(modifier: Modifier = Modifier){
-    val data = DiaryList.diaryList
+    val viewModel : MainViewModel = viewModel()
+    val data = viewModel.data
+    val context = LocalContext.current
 
 
     if(data.isEmpty()){
@@ -110,11 +130,15 @@ fun MainScreenContent(modifier: Modifier = Modifier){
 
         LazyColumn(
             horizontalAlignment = Alignment.CenterHorizontally,
+            contentPadding = PaddingValues(bottom = 84.dp),
             modifier = modifier.fillMaxSize()
         ){
 
             items(data){ diary ->
-                DiaryBox(diary = diary)
+                DiaryBox(diary = diary){
+                    val pesan = context.getString(R.string.clicked_card, diary.judul)
+                    Toast.makeText(context, pesan, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
@@ -122,13 +146,16 @@ fun MainScreenContent(modifier: Modifier = Modifier){
 }
 
 @Composable
-fun DiaryBox(diary: Diary) {
+fun DiaryBox(diary: Diary, onClick : () -> Unit) {
     val context = LocalContext.current
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 16.dp),
+            .padding(bottom = 16.dp)
+            .clickable {
+                onClick()
+            },
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
@@ -140,6 +167,8 @@ fun DiaryBox(diary: Diary) {
                 text = diary.judul,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
 
@@ -173,6 +202,8 @@ fun DiaryBox(diary: Diary) {
             Text(
                 text = diary.isi,
                 style = MaterialTheme.typography.bodyLarge,
+                maxLines = 4,
+                overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
                     .padding(bottom = 16.dp)
             )

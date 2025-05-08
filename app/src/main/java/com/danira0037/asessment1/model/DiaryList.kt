@@ -4,7 +4,7 @@ object DiaryList {
     private val _diaryList = mutableListOf<Diary>()
 
     val diaryList: List<Diary> get() = _diaryList
-    var tempDiary: Diary = Diary("", "", "00/00/0000", "Mood")
+    var tempDiary: Diary = Diary(1,"", "", "00/00/0000", "Mood")
 
     fun addToDiary(diary : Diary){
         _diaryList.add(diary)
