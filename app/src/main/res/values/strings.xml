@@ -22,4 +22,5 @@
     <string name="happy_mood">Happy</string>
     <string name="normal_mood">Neutral</string>
     <string name="clicked_card">%1$s clicked!</string>
+    <string name="invalid">Title, Content, Date, and Mood must not empty!</string>
 </resources>

@@ -2,9 +2,16 @@ package com.danira0037.asessment1.ui.screen
 
 import android.content.res.Configuration
 import android.icu.util.Calendar
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -13,12 +20,32 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.Warning
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -32,10 +59,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.danira0037.asessment1.R
-import com.danira0037.asessment1.model.Diary
-import com.danira0037.asessment1.model.DiaryList
-import com.danira0037.asessment1.model.MainViewModel
+import com.danira0037.asessment1.model.DetailViewModel
 import com.danira0037.asessment1.ui.theme.Asessment1Theme
+import com.danira0037.asessment1.util.ViewModelFactory
 
 const val KEY_ID_DIARY = "idDiary"
 
@@ -75,14 +101,16 @@ fun AddScreen(navController: NavController, id : Long? = null) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DiaryFormScreen(modifier: Modifier, navController: NavController, id : Long? = null) {
-    val viewModel: MainViewModel = viewModel()
+    val context = LocalContext.current
+    val factory = ViewModelFactory(context)
+    val viewModel: DetailViewModel = viewModel(factory = factory)
+
     val moodText = stringResource(R.string.diary_mood)
-    DiaryList.tempDiary = Diary(1, "", "", "00/00/0000", moodText)
 
     var diaryTitle by rememberSaveable { mutableStateOf("") }
     var diaryContent by rememberSaveable { mutableStateOf("") }
-    var diaryDate by rememberSaveable { mutableStateOf("") }
-    var diaryMood by rememberSaveable { mutableStateOf("") }
+    var diaryDate by rememberSaveable { mutableStateOf("00/00/0000") }
+    var diaryMood by rememberSaveable { mutableStateOf(moodText) }
 
     var diaryTitleError by rememberSaveable { mutableStateOf(false) }
     var diaryContentError by rememberSaveable { mutableStateOf(false) }
@@ -133,7 +161,6 @@ fun DiaryFormScreen(modifier: Modifier, navController: NavController, id : Long?
             value = diaryTitle,
             onValueChange = {
                 diaryTitle = it
-                DiaryList.tempDiary = Diary(1,it, diaryContent, diaryDate, diaryMood)
             },
             label = { Text(stringResource(id = R.string.diary_title)) },
             isError = diaryTitleError,
@@ -152,7 +179,6 @@ fun DiaryFormScreen(modifier: Modifier, navController: NavController, id : Long?
             value = diaryContent,
             onValueChange = {
                 diaryContent = it
-                DiaryList.tempDiary = Diary(1,diaryTitle, it, diaryDate, diaryMood)
             },
             label = { Text(stringResource(id = R.string.diary_content)) },
             isError = diaryContentError,
@@ -205,7 +231,6 @@ fun DiaryFormScreen(modifier: Modifier, navController: NavController, id : Long?
                                 timeInMillis = millis
                             }
                             diaryDate = "${calendar.get(Calendar.DAY_OF_MONTH)}/${calendar.get(Calendar.MONTH) + 1}/${calendar.get(Calendar.YEAR)}"
-                            DiaryList.tempDiary = Diary(1,diaryTitle, diaryContent, diaryDate, diaryMood)
                         }
                         showDatePicker = false
                     }) {
@@ -243,7 +268,6 @@ fun DiaryFormScreen(modifier: Modifier, navController: NavController, id : Long?
                         text = { Text(mood) },
                         onClick = {
                             diaryMood = mood
-                            DiaryList.tempDiary = Diary(1,diaryTitle, diaryContent, diaryDate, mood)
                             showMoodDropDown = false
                         }
                     )
@@ -259,11 +283,19 @@ fun DiaryFormScreen(modifier: Modifier, navController: NavController, id : Long?
                 diaryDateError = diaryDate == "00/00/0000"
                 diaryMoodError = diaryMood == moodText
 
-                if (!diaryTitleError && !diaryContentError && !diaryDateError && !diaryMoodError) {
-                    DiaryList.addToDiary(Diary(1,diaryTitle, diaryContent, diaryDate, diaryMood))
-                    DiaryList.tempDiary = Diary(1,"", "", "00/00/0000", moodText)
-                    navController.popBackStack()
+                if (diaryTitleError || diaryContentError || diaryDateError || diaryMoodError) {
+                    Toast.makeText(context, R.string.invalid, Toast.LENGTH_SHORT).show()
+                    return@Button
                 }
+
+                if(id == null){
+                    viewModel.insert(diaryTitle, diaryContent, diaryDate, diaryMood)
+                }else{
+                    viewModel.update(id, diaryTitle, diaryContent, diaryDate, diaryMood)
+                }
+
+                navController.popBackStack()
+
             },
             modifier = Modifier
                 .fillMaxWidth()

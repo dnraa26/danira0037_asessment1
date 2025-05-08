@@ -23,4 +23,5 @@
     <string name="happy_mood">Senang</string>
     <string name="normal_mood">Biasa saja</string>
     <string name="clicked_card">%1$s diklik!</string>
+    <string name="invalid">Judul, Isi, Tanggal, dan Mood tidak boleh kosong!</string>
 </resources>

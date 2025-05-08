@@ -1,32 +1,19 @@
 package com.danira0037.asessment1.model
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.danira0037.asessment1.database.DiaryDao
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 
-class MainViewModel : ViewModel() {
-    val data = listOf(
-        Diary(
-            id = 1,
-            judul = "Hari Senin",
-            isi = "Apapun itu",
-            tanggal = "01/01/01",
-            mood = "Senang"
-        ),Diary(
-            id = 2,
-            judul = "Hari Selasa",
-            isi = "Apapun itu Selasa",
-            tanggal = "01/01/02",
-            mood = "Senang"
-        ),Diary(
-            id = 3,
-            judul = "Hari Rabu",
-            isi = "Apapun itu Rabu",
-            tanggal = "01/01/03",
-            mood = "Senang"
-        )
+class MainViewModel(dao : DiaryDao) : ViewModel() {
+    val data : StateFlow<List<Diary>> = dao.getCatatan().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = emptyList()
     )
 
-    fun getDiary(id: Long): Diary? {
-        return data.find { it.id == id }
-    }
+
 
 }

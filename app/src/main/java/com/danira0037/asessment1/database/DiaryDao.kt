@@ -19,4 +19,7 @@ interface DiaryDao {
     @Query("SELECT * FROM diary ORDER BY tanggal DESC")
     fun getCatatan(): Flow<List<Diary>>
 
+    @Query("SELECT * FROM diary WHERE id = :id")
+    suspend fun getDiaryById(id: Long): Diary?
+
 }

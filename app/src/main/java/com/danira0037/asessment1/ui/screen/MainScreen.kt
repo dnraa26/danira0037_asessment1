@@ -34,6 +34,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -54,6 +56,7 @@ import com.danira0037.asessment1.model.Diary
 import com.danira0037.asessment1.model.MainViewModel
 import com.danira0037.asessment1.navigation.Screen
 import com.danira0037.asessment1.ui.theme.Asessment1Theme
+import com.danira0037.asessment1.util.ViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -90,8 +93,10 @@ fun MainScreen(navController: NavHostController) {
 
 @Composable
 fun MainScreenContent(modifier: Modifier = Modifier, navController: NavHostController){
-    val viewModel : MainViewModel = viewModel()
-    val data = viewModel.data
+    val context : Context = LocalContext.current
+    val factory = ViewModelFactory(context)
+    val viewModel : MainViewModel = viewModel(factory = factory)
+    val data by viewModel.data.collectAsState()
 
     if(data.isEmpty()){
         Column(
