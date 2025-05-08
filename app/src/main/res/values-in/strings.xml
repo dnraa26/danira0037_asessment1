@@ -9,6 +9,7 @@
     <string name="diary_date_set">Tanggal Catatan: %1$s</string>
     <string name="diary_date_set_confirm">Atur Tanggal</string>
     <string name="diary_create">Simpan Catatan</string>
+    <string name="diary_edit">Edit Catatan</string>
     <string name="diary">Tulis</string>
     <string name="share">Bagikan</string>
     <string name="share_template">Judul: %1$s\nTanggal: %2$s\nPerasaan: %3$s\n\nIni yang kutulis hari ini:\n%4$s</string>

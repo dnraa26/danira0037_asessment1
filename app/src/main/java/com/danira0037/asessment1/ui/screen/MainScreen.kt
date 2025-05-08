@@ -2,7 +2,6 @@ package com.danira0037.asessment1.ui.screen
 
 import android.content.Context
 import android.content.Intent
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -49,7 +48,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.danira0037.asessment1.R
 import com.danira0037.asessment1.model.Diary
@@ -59,7 +58,7 @@ import com.danira0037.asessment1.ui.theme.Asessment1Theme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(navController: NavController) {
+fun MainScreen(navController: NavHostController) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -67,20 +66,7 @@ fun MainScreen(navController: NavController) {
                 colors = TopAppBarDefaults.mediumTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                ),
-                actions = {
-                    IconButton(
-                        onClick = {
-                            navController.navigate(Screen.Add.route)
-                        }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Add,
-                            contentDescription = stringResource(id = R.string.diary_create),
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                    }
-                }
+                )
             )
         },
         floatingActionButton = {
@@ -96,16 +82,17 @@ fun MainScreen(navController: NavController) {
             }
         }
     ) { innerPadding ->
-        MainScreenContent(Modifier.padding(innerPadding).padding(16.dp))
+        MainScreenContent(
+            Modifier.padding(innerPadding).padding(16.dp),
+            navController
+        )
     }
 }
 
 @Composable
-fun MainScreenContent(modifier: Modifier = Modifier){
+fun MainScreenContent(modifier: Modifier = Modifier, navController: NavHostController){
     val viewModel : MainViewModel = viewModel()
     val data = viewModel.data
-    val context = LocalContext.current
-
 
     if(data.isEmpty()){
         Column(
@@ -136,8 +123,7 @@ fun MainScreenContent(modifier: Modifier = Modifier){
 
             items(data){ diary ->
                 DiaryBox(diary = diary){
-                    val pesan = context.getString(R.string.clicked_card, diary.judul)
-                    Toast.makeText(context, pesan, Toast.LENGTH_SHORT).show()
+                    navController.navigate(Screen.Edit.withId(diary.id))
                 }
             }
         }

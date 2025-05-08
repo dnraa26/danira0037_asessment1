@@ -23,6 +23,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,9 +35,11 @@ import com.danira0037.asessment1.model.Diary
 import com.danira0037.asessment1.model.DiaryList
 import com.danira0037.asessment1.ui.theme.Asessment1Theme
 
+const val KEY_ID_DIARY = "idDiary"
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddScreen(navController: NavController) {
+fun AddScreen(navController: NavController, id : Long? = null) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -49,7 +52,7 @@ fun AddScreen(navController: NavController) {
                         )
                     }
                 },
-                title = { Text("My Diary") },
+                title = { Text(text = stringResource(R.string.app_name)) },
                 colors = TopAppBarDefaults.mediumTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -61,16 +64,17 @@ fun AddScreen(navController: NavController) {
             modifier = Modifier
                 .padding(innerPadding)
                 .padding(16.dp),
-            navController = navController
+            navController = navController,
+            id = id
         )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DiaryFormScreen(modifier: Modifier, navController: NavController) {
+fun DiaryFormScreen(modifier: Modifier, navController: NavController, id : Long? = null) {
     val moodText = stringResource(R.string.diary_mood)
-    DiaryList.tempDiary = Diary("", "", "00/00/0000", moodText)
+    DiaryList.tempDiary = Diary(1, "", "", "00/00/0000", moodText)
 
     var diaryTitle by rememberSaveable { mutableStateOf(DiaryList.tempDiary.judul) }
     var diaryContent by rememberSaveable { mutableStateOf(DiaryList.tempDiary.isi) }
@@ -101,7 +105,7 @@ fun DiaryFormScreen(modifier: Modifier, navController: NavController) {
         )
 
         Text(
-            text = stringResource(id = R.string.diary_create),
+            text =  if(id == null ) stringResource(id = R.string.diary_create) else stringResource(id = R.string.diary_edit),
             style = MaterialTheme.typography.headlineMedium,
             textAlign = TextAlign.Center
         )
@@ -117,7 +121,7 @@ fun DiaryFormScreen(modifier: Modifier, navController: NavController) {
             value = diaryTitle,
             onValueChange = {
                 diaryTitle = it
-                DiaryList.tempDiary = Diary(it, diaryContent, diaryDate, diaryMood)
+                DiaryList.tempDiary = Diary(1,it, diaryContent, diaryDate, diaryMood)
             },
             label = { Text(stringResource(id = R.string.diary_title)) },
             isError = diaryTitleError,
@@ -125,7 +129,8 @@ fun DiaryFormScreen(modifier: Modifier, navController: NavController) {
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Next
+                imeAction = ImeAction.Next,
+                capitalization = KeyboardCapitalization.Words
             ),
             modifier = Modifier.fillMaxWidth()
         )
@@ -135,7 +140,7 @@ fun DiaryFormScreen(modifier: Modifier, navController: NavController) {
             value = diaryContent,
             onValueChange = {
                 diaryContent = it
-                DiaryList.tempDiary = Diary(diaryTitle, it, diaryDate, diaryMood)
+                DiaryList.tempDiary = Diary(1,diaryTitle, it, diaryDate, diaryMood)
             },
             label = { Text(stringResource(id = R.string.diary_content)) },
             isError = diaryContentError,
@@ -188,7 +193,7 @@ fun DiaryFormScreen(modifier: Modifier, navController: NavController) {
                                 timeInMillis = millis
                             }
                             diaryDate = "${calendar.get(Calendar.DAY_OF_MONTH)}/${calendar.get(Calendar.MONTH) + 1}/${calendar.get(Calendar.YEAR)}"
-                            DiaryList.tempDiary = Diary(diaryTitle, diaryContent, diaryDate, diaryMood)
+                            DiaryList.tempDiary = Diary(1,diaryTitle, diaryContent, diaryDate, diaryMood)
                         }
                         showDatePicker = false
                     }) {
@@ -226,7 +231,7 @@ fun DiaryFormScreen(modifier: Modifier, navController: NavController) {
                         text = { Text(mood) },
                         onClick = {
                             diaryMood = mood
-                            DiaryList.tempDiary = Diary(diaryTitle, diaryContent, diaryDate, mood)
+                            DiaryList.tempDiary = Diary(1,diaryTitle, diaryContent, diaryDate, mood)
                             showMoodDropDown = false
                         }
                     )
@@ -243,8 +248,8 @@ fun DiaryFormScreen(modifier: Modifier, navController: NavController) {
                 diaryMoodError = diaryMood == moodText
 
                 if (!diaryTitleError && !diaryContentError && !diaryDateError && !diaryMoodError) {
-                    DiaryList.addToDiary(Diary(diaryTitle, diaryContent, diaryDate, diaryMood))
-                    DiaryList.tempDiary = Diary("", "", "00/00/0000", moodText)
+                    DiaryList.addToDiary(Diary(1,diaryTitle, diaryContent, diaryDate, diaryMood))
+                    DiaryList.tempDiary = Diary(1,"", "", "00/00/0000", moodText)
                     navController.popBackStack()
                 }
             },

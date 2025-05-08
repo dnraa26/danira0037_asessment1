@@ -7,7 +7,8 @@
     <string name="diary_mood">How did you feel?</string>
     <string name="diary_date_set">Entry Date: %1$s</string>
     <string name="diary_date_set_confirm">Set Date</string>
-    <string name="diary_create">Save Entry</string>
+    <string name="diary_create">Create Diary</string>
+    <string name="diary_edit">Edit Diary</string>
     <string name="diary">Write</string>
     <string name="share">Share</string>
     <string name="share_template">Title : %1$s\nDate : %2$s\nMood : %3$s\n\nHere is what I wrote today:\n\%4$s</string>
