@@ -26,4 +26,9 @@
     <string name="invalid">Judul, Isi, Tanggal, dan Mood tidak boleh kosong!</string>
     <string name="other">Pilihan lainnya</string>
     <string name="diary_delete">Hapus catatan</string>
+    <string name="delete_confirmation">Hapus catatan ini?</string>
+    <string name="delete_button">Hapus</string>
+    <string name="cancel_button">Batal</string>
+    <string name="list">Tampilan list</string>
+    <string name="grid">Tampilan grid</string>
 </resources>

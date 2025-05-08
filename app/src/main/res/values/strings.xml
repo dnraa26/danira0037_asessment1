@@ -25,4 +25,9 @@
     <string name="invalid">Title, Content, Date, and Mood must not empty!</string>
     <string name="other">Other option</string>
     <string name="diary_delete">Delete diary</string>
+    <string name="delete_confirmation">Delete this diary?</string>
+    <string name="delete_button">Delete</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="list">List view</string>
+    <string name="grid">Grid view</string>
 </resources>

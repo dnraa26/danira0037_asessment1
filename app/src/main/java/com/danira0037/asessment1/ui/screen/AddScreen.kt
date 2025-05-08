@@ -75,6 +75,8 @@ fun AddScreen(navController: NavController, id : Long? = null) {
     val factory = ViewModelFactory(context)
     val viewModel: DetailViewModel = viewModel(factory = factory)
 
+    var showDialog by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -95,8 +97,7 @@ fun AddScreen(navController: NavController, id : Long? = null) {
                 actions = {
                     if(id != null){
                         DeleteAction {
-                            viewModel.delete(id)
-                            navController.popBackStack()
+                            showDialog = true
                         }
                     }
                 }
@@ -112,6 +113,16 @@ fun AddScreen(navController: NavController, id : Long? = null) {
             context = context,
             viewModel = viewModel
         )
+
+        if(id != null && showDialog){
+            DisplayAlertDialog(
+                onDismissRequest = { showDialog = false }
+            ){
+                showDialog = false
+                viewModel.delete(id)
+                navController.popBackStack()
+            }
+        }
     }
 }
 
