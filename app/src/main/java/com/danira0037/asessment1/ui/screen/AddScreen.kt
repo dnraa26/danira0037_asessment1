@@ -389,7 +389,10 @@ fun IconPicker(isError: Boolean, content: @Composable () -> Unit = {}) {
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun DiaryFromScreenPreview() {
-    Asessment1Theme {
-        AddScreen(rememberNavController())
-    }
+    Asessment1Theme (
+        theme = "LightTheme",
+        content = {
+            AddScreen(rememberNavController())
+        }
+    )
 }

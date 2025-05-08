@@ -39,10 +39,13 @@ fun DisplayAlertDialog(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun DisplayAlertDialogPreview() {
-    Asessment1Theme {
-        DisplayAlertDialog(
-            onDismissRequest = {},
-            onConfirmation = {}
-        )
-    }
+    Asessment1Theme (
+        theme = "LightTheme",
+        content = {
+            DisplayAlertDialog(
+                onDismissRequest = {},
+                onConfirmation = {}
+            )
+        }
+    )
 }

@@ -42,9 +42,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -74,8 +71,10 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(navController: NavHostController) {
-    val dataStore = SettingsDataStore(LocalContext.current)
+    val context = LocalContext.current
+    val dataStore = SettingsDataStore(context)
     val showList by dataStore.layoutFlow.collectAsState(true)
+
 
     Scaffold(
         topBar = {
@@ -105,6 +104,8 @@ fun MainScreen(navController: NavHostController) {
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
+
+                    ThemeSelector(dataStore = dataStore)
                 }
             )
         },
@@ -124,7 +125,7 @@ fun MainScreen(navController: NavHostController) {
         MainScreenContent(
             showList,
             Modifier.padding(innerPadding).padding(16.dp),
-            navController
+            navController,
         )
     }
 }
@@ -136,7 +137,7 @@ fun MainScreenContent(showList : Boolean, modifier: Modifier = Modifier, navCont
     val viewModel : MainViewModel = viewModel(factory = factory)
     val data by viewModel.data.collectAsState()
 
-    if(data.isEmpty()){
+    if (data.isEmpty()) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
@@ -155,8 +156,8 @@ fun MainScreenContent(showList : Boolean, modifier: Modifier = Modifier, navCont
                 textAlign = TextAlign.Center
             )
         }
-    }else{
-        if(showList) {
+    } else {
+        if (showList) {
 
             LazyColumn(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -170,13 +171,13 @@ fun MainScreenContent(showList : Boolean, modifier: Modifier = Modifier, navCont
                     }
                 }
             }
-        }else{
+        } else {
             LazyVerticalStaggeredGrid(
                 modifier = modifier.fillMaxSize(),
                 columns = StaggeredGridCells.Fixed(2),
                 verticalItemSpacing = 8.dp,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                contentPadding = PaddingValues(2.dp,2.dp,2.dp,84.dp)
+                contentPadding = PaddingValues(2.dp, 2.dp, 2.dp, 84.dp)
             ) {
                 items(data) { diary ->
                     GridItem(diary = diary) {
@@ -186,8 +187,8 @@ fun MainScreenContent(showList : Boolean, modifier: Modifier = Modifier, navCont
             }
         }
     }
-
 }
+
 
 @Composable
 fun GridItem(diary : Diary, onClick: () -> Unit){
@@ -394,7 +395,10 @@ private fun shareDiary(context: Context, message : String){
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    Asessment1Theme {
-        MainScreen(rememberNavController())
-    }
+    Asessment1Theme (
+        theme = "LightTheme",
+        content = {
+            MainScreen(rememberNavController())
+        }
+    )
 }
