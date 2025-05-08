@@ -25,6 +25,8 @@ class MainViewModel : ViewModel() {
         )
     )
 
-
+    fun getDiary(id: Long): Diary? {
+        return data.find { it.id == id }
+    }
 
 }

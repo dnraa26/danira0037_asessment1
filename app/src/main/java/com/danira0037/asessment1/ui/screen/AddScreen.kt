@@ -28,11 +28,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.danira0037.asessment1.R
 import com.danira0037.asessment1.model.Diary
 import com.danira0037.asessment1.model.DiaryList
+import com.danira0037.asessment1.model.MainViewModel
 import com.danira0037.asessment1.ui.theme.Asessment1Theme
 
 const val KEY_ID_DIARY = "idDiary"
@@ -73,13 +75,14 @@ fun AddScreen(navController: NavController, id : Long? = null) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DiaryFormScreen(modifier: Modifier, navController: NavController, id : Long? = null) {
+    val viewModel: MainViewModel = viewModel()
     val moodText = stringResource(R.string.diary_mood)
     DiaryList.tempDiary = Diary(1, "", "", "00/00/0000", moodText)
 
-    var diaryTitle by rememberSaveable { mutableStateOf(DiaryList.tempDiary.judul) }
-    var diaryContent by rememberSaveable { mutableStateOf(DiaryList.tempDiary.isi) }
-    var diaryDate by rememberSaveable { mutableStateOf(DiaryList.tempDiary.tanggal) }
-    var diaryMood by rememberSaveable { mutableStateOf(DiaryList.tempDiary.mood) }
+    var diaryTitle by rememberSaveable { mutableStateOf("") }
+    var diaryContent by rememberSaveable { mutableStateOf("") }
+    var diaryDate by rememberSaveable { mutableStateOf("") }
+    var diaryMood by rememberSaveable { mutableStateOf("") }
 
     var diaryTitleError by rememberSaveable { mutableStateOf(false) }
     var diaryContentError by rememberSaveable { mutableStateOf(false) }
@@ -91,6 +94,15 @@ fun DiaryFormScreen(modifier: Modifier, navController: NavController, id : Long?
 
     var showMoodDropDown by rememberSaveable { mutableStateOf(false) }
     var showDatePicker by rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        if(id == null) return@LaunchedEffect
+        val data = viewModel.getDiary(id) ?: return@LaunchedEffect
+        diaryTitle = data.judul
+        diaryContent = data.isi
+        diaryDate = data.tanggal
+        diaryMood = data.mood
+    }
 
     Column(
         modifier = modifier.verticalScroll(rememberScrollState()),
