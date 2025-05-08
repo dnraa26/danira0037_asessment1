@@ -1,5 +1,6 @@
 package com.danira0037.asessment1.ui.screen
 
+import android.content.Context
 import android.content.res.Configuration
 import android.icu.util.Calendar
 import android.widget.Toast
@@ -19,6 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material.icons.outlined.DateRange
+import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
@@ -40,6 +42,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -68,6 +71,10 @@ const val KEY_ID_DIARY = "idDiary"
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddScreen(navController: NavController, id : Long? = null) {
+    val context = LocalContext.current
+    val factory = ViewModelFactory(context)
+    val viewModel: DetailViewModel = viewModel(factory = factory)
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -84,7 +91,15 @@ fun AddScreen(navController: NavController, id : Long? = null) {
                 colors = TopAppBarDefaults.mediumTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                )
+                ),
+                actions = {
+                    if(id != null){
+                        DeleteAction {
+                            viewModel.delete(id)
+                            navController.popBackStack()
+                        }
+                    }
+                }
             )
         }
     ) { innerPadding ->
@@ -93,18 +108,16 @@ fun AddScreen(navController: NavController, id : Long? = null) {
                 .padding(innerPadding)
                 .padding(16.dp),
             navController = navController,
-            id = id
+            id = id,
+            context = context,
+            viewModel = viewModel
         )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DiaryFormScreen(modifier: Modifier, navController: NavController, id : Long? = null) {
-    val context = LocalContext.current
-    val factory = ViewModelFactory(context)
-    val viewModel: DetailViewModel = viewModel(factory = factory)
-
+fun DiaryFormScreen(modifier: Modifier, navController: NavController, id : Long? = null, context: Context, viewModel: DetailViewModel) {
     val moodText = stringResource(R.string.diary_mood)
 
     var diaryTitle by rememberSaveable { mutableStateOf("") }
@@ -302,6 +315,34 @@ fun DiaryFormScreen(modifier: Modifier, navController: NavController, id : Long?
                 .padding(vertical = 16.dp)
         ) {
             Text(stringResource(id = R.string.diary))
+        }
+    }
+}
+
+@Composable
+fun DeleteAction(delete : () -> Unit){
+    var expanded by remember { mutableStateOf(false) }
+
+    IconButton(onClick = {
+        expanded = true
+    }) {
+        Icon(
+            imageVector = Icons.Outlined.MoreVert,
+            contentDescription = stringResource(id = R.string.other),
+            tint = MaterialTheme.colorScheme.primary
+        )
+
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            DropdownMenuItem(
+                text = { Text(stringResource(id = R.string.diary_delete)) },
+                onClick = {
+                    expanded = false
+                    delete()
+                }
+            )
         }
     }
 }

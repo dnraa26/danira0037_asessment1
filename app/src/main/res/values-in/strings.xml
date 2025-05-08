@@ -24,4 +24,6 @@
     <string name="normal_mood">Biasa saja</string>
     <string name="clicked_card">%1$s diklik!</string>
     <string name="invalid">Judul, Isi, Tanggal, dan Mood tidak boleh kosong!</string>
+    <string name="other">Pilihan lainnya</string>
+    <string name="diary_delete">Hapus catatan</string>
 </resources>

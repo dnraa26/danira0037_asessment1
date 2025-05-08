@@ -22,4 +22,7 @@ interface DiaryDao {
     @Query("SELECT * FROM diary WHERE id = :id")
     suspend fun getDiaryById(id: Long): Diary?
 
+    @Query("DELETE FROM diary WHERE id = :id")
+    suspend fun deleteById(id: Long)
+
 }

@@ -23,4 +23,6 @@
     <string name="normal_mood">Neutral</string>
     <string name="clicked_card">%1$s clicked!</string>
     <string name="invalid">Title, Content, Date, and Mood must not empty!</string>
+    <string name="other">Other option</string>
+    <string name="diary_delete">Delete diary</string>
 </resources>
