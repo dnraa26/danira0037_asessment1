@@ -65,12 +65,18 @@ import com.danira0037.asessment1.model.Diary
 import com.danira0037.asessment1.model.MainViewModel
 import com.danira0037.asessment1.navigation.Screen
 import com.danira0037.asessment1.ui.theme.Asessment1Theme
+import com.danira0037.asessment1.util.SettingsDataStore
 import com.danira0037.asessment1.util.ViewModelFactory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(navController: NavHostController) {
-    var showList by remember { mutableStateOf(true) }
+    val dataStore = SettingsDataStore(LocalContext.current)
+    val showList by dataStore.layoutFlow.collectAsState(true)
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -82,7 +88,9 @@ fun MainScreen(navController: NavHostController) {
                 actions = {
                     IconButton(
                         onClick = {
-                            showList = !showList
+                            CoroutineScope(Dispatchers.IO).launch {
+                                dataStore.saveLayout(!showList)
+                            }
                         }
                     ) {
                         Icon(
