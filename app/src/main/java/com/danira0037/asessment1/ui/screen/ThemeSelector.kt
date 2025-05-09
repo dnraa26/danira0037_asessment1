@@ -23,7 +23,6 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ThemeSelector(dataStore: SettingsDataStore){
-    val settingsDataStore = dataStore
 
     var expanded by remember { mutableStateOf(false) }
 
@@ -47,7 +46,7 @@ fun ThemeSelector(dataStore: SettingsDataStore){
                 text = { Text(text = ThemeOption.LightTheme.name) },
                 onClick = {
                     CoroutineScope(Dispatchers.IO).launch {
-                        settingsDataStore.saveTheme(ThemeOption.LightTheme.name)
+                        dataStore.saveTheme(ThemeOption.LightTheme.name)
                     }
                     expanded = false
                 }
@@ -57,7 +56,7 @@ fun ThemeSelector(dataStore: SettingsDataStore){
                 text = { Text(text = ThemeOption.DarkTheme.name) },
                 onClick = {
                     CoroutineScope(Dispatchers.IO).launch {
-                        settingsDataStore.saveTheme(ThemeOption.DarkTheme.name)
+                        dataStore.saveTheme(ThemeOption.DarkTheme.name)
                     }
                     expanded = false
                 }
@@ -67,7 +66,7 @@ fun ThemeSelector(dataStore: SettingsDataStore){
                 text = { Text(text = ThemeOption.MediumContrastLightTheme.name) },
                 onClick = {
                     CoroutineScope(Dispatchers.IO).launch {
-                        settingsDataStore.saveTheme(ThemeOption.MediumContrastLightTheme.name)
+                        dataStore.saveTheme(ThemeOption.MediumContrastLightTheme.name)
                     }
                     expanded = false
                 }
@@ -77,7 +76,7 @@ fun ThemeSelector(dataStore: SettingsDataStore){
                 text = { Text(text = ThemeOption.HighContrastLightTheme.name) },
                 onClick = {
                     CoroutineScope(Dispatchers.IO).launch {
-                        settingsDataStore.saveTheme(ThemeOption.HighContrastLightTheme.name)
+                        dataStore.saveTheme(ThemeOption.HighContrastLightTheme.name)
                     }
                     expanded = false
                 }
@@ -87,7 +86,7 @@ fun ThemeSelector(dataStore: SettingsDataStore){
                 text = { Text(text = ThemeOption.MediumContrastDarkTheme.name) },
                 onClick = {
                     CoroutineScope(Dispatchers.IO).launch {
-                        settingsDataStore.saveTheme(ThemeOption.MediumContrastDarkTheme.name)
+                        dataStore.saveTheme(ThemeOption.MediumContrastDarkTheme.name)
                     }
                     expanded = false
                 }
@@ -97,7 +96,7 @@ fun ThemeSelector(dataStore: SettingsDataStore){
                 text = { Text(text = ThemeOption.HighContrastDarkTheme.name) },
                 onClick = {
                     CoroutineScope(Dispatchers.IO).launch {
-                        settingsDataStore.saveTheme(ThemeOption.HighContrastDarkTheme.name)
+                        dataStore.saveTheme(ThemeOption.HighContrastDarkTheme.name)
                     }
                     expanded = false
                 }
